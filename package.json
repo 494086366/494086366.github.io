@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "express-fileupload": "^1.5.1",
+    "fs": "^0.0.1-security",
+    "mongodb": "^6.13.0",
+    "mongoose": "^6.13.8",
+    "multer": "^1.4.5-lts.1",
+    "music-metadata": "^10.9.0",
+    "path": "^0.12.7",
+    "sqlite3": "^5.1.7"
+  },
+  "scripts": {
+    "start": "node F:/audio-website/server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

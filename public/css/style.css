@@ -1,0 +1,783 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    min-width: auto; /* 允许内容自然扩展 */
+    overflow: auto; /* 确保滚动条可用 */
+}
+
+.upload-section {
+    margin-top: 20px;
+    padding: 15px;
+    border-top: 2px solid #4CAF50;
+}
+
+.file-list {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.audio-item {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.audio-item span {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 70%;
+    font-family: 'Microsoft YaHei', sans-serif;
+}
+
+.audio-item button {
+    flex-shrink: 0;
+    padding: 8px 15px;
+}
+
+.downloaded {
+    background-color: #e8f5e9;
+    border-color: #a5d6a7;
+}
+
+.not-downloaded {
+    background-color: #fff3e0;
+    border-color: #ffcc80;
+}
+
+button, .download-button {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+}
+
+/* 添加分类相关样式 */
+.category-group {
+    margin: 15px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.category-header {
+    padding: 12px;
+    background: #f8f9fa;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.category-title {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.category-arrow {
+    transition: transform 0.3s;
+}
+
+.category-content {
+    padding: 10px;
+    display: none;
+}
+
+.category-group.expanded .category-content {
+    display: block;
+}
+
+.category-group.expanded .category-arrow {
+    transform: rotate(90deg);
+}
+
+.date-group {
+    margin-left: 20px;
+    border-left: 2px solid #eee;
+    padding-left: 10px;
+}
+
+/* 新版布局样式 */
+.container {
+    display: flex;
+    min-height: 100vh;
+    background: #f8f9fa;
+    position: relative;
+    overflow-x: hidden; /* 防止横向滚动 */
+}
+
+.sidebar {
+    width: 360px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    background: white;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.05);
+    z-index: 2; /* 确保在内容之上 */
+}
+
+.main-content {
+    margin-left: 360px;
+    width: calc(100% - 360px);
+    padding: 50px;
+    box-sizing: border-box;
+    min-height: 100vh;
+    background: white;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.05);
+    /* 新增弹性布局 */
+    display: flex;
+    flex-direction: column;
+}
+
+.page-title {
+    margin-bottom: 30px;
+    color: #2c3e50;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 10px;
+}
+
+/* 拖拽上传区域 */
+.upload-area {
+    min-height: 300px;
+    padding: 40px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px dashed #4CAF50;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.upload-instruction {
+    font-size: 1.5rem;
+    color: #666;
+}
+
+.upload-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.upload-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+#confirmUpload, #cancelUpload {
+    transition: all 0.3s ease-in-out;
+    opacity: 1;
+}
+
+.file-count {
+    color: #666;
+    font-size: 14px;
+}
+
+/* 文件列表项 */
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    margin: 15px 0;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 0;
+}
+
+.file-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.15);
+}
+
+.file-name {
+    font-size: 15px;
+    color: #333;
+    flex: 1;
+    min-width: 0;
+    padding: 0 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.download-btn {
+    padding: 10px 30px;
+    border-radius: 18px;
+    font-size: 15px;
+    white-space: nowrap;
+    min-width: 100px;
+    text-align: center;
+}
+
+.download-status {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.download-status.downloaded {
+    background: #4CAF50;
+}
+
+.download-status.pending {
+    background: #ffc107;
+}
+
+/* 分类菜单 */
+.category-item {
+    padding: 20px 30px;
+    font-size: 1.1rem;
+    margin: 12px 0;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+/* 激活状态 */
+.category-item.active {
+    background: #3498db !important;
+    color: white !important;
+}
+
+/* 鼠标悬停效果 */
+.category-item:hover {
+    background: #e0e0e0;
+}
+
+.file-count {
+    margin-left: 15px;
+    font-weight: 500;
+    color: #2e7d32;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+    border: 2px dashed #dee2e6;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.sidebar h2 {
+    color: #fff;
+    font-size: 1.4em;
+    padding: 0 25px 20px;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #4CAF50;
+}
+
+#categoryMenu {
+    padding: 0 15px;
+}
+
+.upload-status {
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.upload-status.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.upload-status.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* 上传中状态 */
+.uploading {
+    font-size: 18px;
+    color: #4CAF50;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* 批量操作样式 */
+.batch-actions {
+    padding: 15px;
+    border-top: 1px solid #4CAF50;
+    margin-top: 20px;
+}
+
+.date-filter {
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 4px;
+    border: 1px solid #4CAF50;
+}
+
+/* 信息模式样式 */
+.info-mode .file-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr 100px 120px;
+    gap: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.info-mode .download-btn {
+    display: none;
+}
+
+/* 批量选择样式 */
+.batch-checkbox {
+    width: 18px;
+    height: 18px;
+    margin-right: 15px;
+}
+
+/* 分类视图样式 */
+.category-view .file-item {
+    grid-template-columns: 1fr 120px 100px 80px 120px;
+}
+
+.category-view .file-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* 日期筛选 */
+#dateFilters {
+    padding: 15px;
+    border-bottom: 1px solid #4CAF50;
+}
+
+/* 歌曲信息表格布局 */
+.song-info .file-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr 100px 120px;
+    gap: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 上传文件列表样式 */
+#uploadList .file-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    margin: 5px 0;
+    background: #f8f9fa;
+}
+
+/* 歌曲信息表格 */
+.song-info {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.info-header, .file-item {
+    display: grid;
+    grid-template-columns: 120px 1fr 80px 120px;
+    align-items: center;
+    padding: 12px;
+}
+
+.info-header {
+    background: #f8f9fa;
+    font-weight: 600;
+    border-bottom: 2px solid #4CAF50;
+}
+
+/* 上传文件区域 */
+.upload-section {
+    margin-top: 30px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.upload-list .file-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+    margin: 5px 0;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* 上传区域样式 */
+#uploadArea {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* 分类菜单激活状态 */
+#uploadCategory.active {
+    background: #2196F3;
+    color: white;
+}
+
+/* 新增视图切换相关样式 */
+.content-section {
+    display: none; /* 默认隐藏 */
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* 上传区域特定样式 */
+#uploadSection {
+    display: none; /* 默认隐藏 */
+}
+
+/* 覆盖可能隐藏元素的其他样式 */
+.hidden {
+    display: block !important;
+}
+
+#songListSection {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.file-item button {
+    margin-left: auto;
+    padding: 0.3rem 0.8rem;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.upload-date {
+    margin-left: 1rem;
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* 分类菜单激活状态 */
+.category-item.active {
+    /* 删除原有蓝色背景样式 */
+}
+
+/* 添加上传状态样式 */
+#uploadStatus {
+    margin-left: 15px;
+    padding: 8px 15px;
+    border-radius: 4px;
+    background: #f8f9fa;
+    transition: all 0.3s;
+}
+
+/* 按钮基础样式 */
+.upload-actions button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+/* 操作按钮初始隐藏 */
+#confirmUpload, #cancelUpload {
+    display: none;
+}
+
+.error {
+    color: #dc3545;
+    padding: 1rem;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    background: #f8d7da;
+    margin: 1rem 0;
+}
+
+/* 下载区域样式 */
+#downloadSection {
+    width: 100%;
+    height: calc(100vh - 60px);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.download-list {
+    flex: 1;
+    width: 100%;
+    max-width: none;
+    padding-right: 30px; /* 留出滚动条空间 */
+}
+
+.download-item {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.download-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.download-info {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.download-name {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.download-meta {
+    display: flex;
+    gap: 15px;
+    color: #666;
+    font-size: 14px;
+}
+
+.download-meta span {
+    display: flex;
+    align-items: center;
+}
+
+.download-button {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 100px;
+    text-align: center;
+}
+
+/* 未下载状态 */
+.download-button:not(.downloaded) {
+    background: #2196F3;
+    color: white;
+}
+
+/* 已下载状态 */
+.download-button.downloaded {
+    background: #4CAF50;
+    color: white;
+}
+
+.download-button:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+/* 移除所有标题样式 */
+.sidebar h3 {
+    display: none;
+}
+
+/* 简化分类菜单 */
+.category-menu {
+    background: transparent;
+}
+
+/* 上传界面默认隐藏 */
+#uploadSection {
+    display: none;
+}
+
+/* 下载界面全屏显示 */
+#downloadSection {
+    width: 100%;
+    height: calc(100vh - 60px);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.download-list {
+    display: grid;
+    gap: 12px;
+    padding: 15px;
+}
+
+/* 统一过渡效果 */
+.category-item {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 激活状态指示器 */
+.category-item.active::after {
+    content: "";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 50%;
+}
+
+html {
+    font-size: 20px; /* 原16px */
+}
+
+@media (min-width: 1600px) {
+    .main-content {
+        margin-left: 400px;
+    }
+    
+    .sidebar {
+        width: 400px;
+    }
+}
+
+/* 优化筛选栏样式 */
+.filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.filter-group {
+    display: flex;
+    gap: 12px;
+}
+
+.filter-select {
+    padding: 6px 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: white;
+    min-width: 100px;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-select:hover {
+    border-color: #2196F3;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #2196F3;
+    box-shadow: 0 0 0 2px rgba(33,150,243,0.1);
+}
+
+.selection-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #666;
+    user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.batch-download-btn {
+    background: #2196F3;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.batch-download-btn:hover {
+    background: #1976D2;
+    transform: translateY(-1px);
+}
+
+.batch-download-btn:active {
+    transform: translateY(0);
+}
+
+/* 优化下载项样式 */
+.download-item {
+    padding: 12px 12px 12px 40px;
+    margin-bottom: 12px;
+}
+
+.item-checkbox {
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+}
+
+.download-name {
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.download-meta {
+    font-size: 12px;
+}
+
+.download-button {
+    padding: 6px 16px;
+    font-size: 13px;
+    min-width: 80px;
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>音频分享平台</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="category-menu" id="categoryMenu">
+                <div class="category-item active" data-category="upload">上传文件</div>
+                <div class="category-item" data-category="download">歌曲列表</div>
+                <div class="category-item" data-category="song-info">歌曲信息</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- 上传区域 -->
+            <div id="uploadSection" class="content-section" style="display:none;">
+                <div class="upload-area" id="dropZone">
+                    <div class="upload-instruction">
+                        <span class="upload-icon">↑</span>
+                        <p>拖拽音频文件到这里上传<br>或点击选择文件</p>
+                    </div>
+                </div>
+                <div class="upload-actions">
+                    <button>选择音频文件</button>
+                    <button id="confirmUpload" style="display: none;">确定上传</button>
+                    <button id="cancelUpload" style="display: none;">取消上传</button>
+                    <span id="fileCount">已选择0个文件</span>
+                    <div id="uploadStatus" style="display:none;"></div>
+                </div>
+            </div>
+
+            <!-- 下载区域 -->
+            <div id="downloadSection" class="content-section">
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <select id="artistFilter" class="filter-select">
+                            <option value="">全部歌手</option>
+                        </select>
+                        <select id="dateFilter" class="filter-select">
+                            <option value="">全部日期</option>
+                            <option value="today">今天</option>
+                            <option value="week">本周</option>
+                            <option value="month">本月</option>
+                        </select>
+                    </div>
+                    <div class="selection-actions">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                            全选
+                        </label>
+                        <button id="batchDownloadBtn" class="batch-download-btn" onclick="batchDownload()">
+                            下载选中 (<span id="selectedCount">0</span>)
+                        </button>
+                    </div>
+                </div>
+                <div class="download-list" id="songList"></div>
+            </div>
+
+            <!-- 歌曲信息区域 -->
+            <div id="songInfoSection" style="display: none;">
+                <h2>歌曲信息</h2>
+                <div id="songInfoContent">
+                    <!-- 这里可以添加歌曲信息的内容 -->
+                    <p>选择一首歌曲以查看详细信息。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>
